@@ -92,13 +92,13 @@ function levelSync(method, model, options){
       break;
     case 'read':
       if(typeof model.get('id') === 'undefined'){
-        _cb(new Error('No ID attribute set on model'));
+        cb(new Error('No ID attribute set on model'));
       } else {
         db.get(model.get('id'), cb);
       }
       break;
     default:
-      _cb(new Error('Method '+method+' not recognized'));
+      cb(new Error('Method '+method+' not recognized'));
       break;
   }
 
