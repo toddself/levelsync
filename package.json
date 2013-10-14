@@ -1,0 +1,36 @@
+{
+  "name": "levelsync",
+  "version": "0.0.0",
+  "description": "Backbone.Sync replacement for leveldb",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/toddself/levelsync"
+  },
+  "keywords": [
+    "levelup",
+    "leveldown",
+    "level",
+    "backbone",
+    "sync",
+    "models",
+    "orm"
+  ],
+  "author": "Todd Kenedy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/toddself/levelsync/issues"
+  },
+  "dependencies": {
+    "backbone": "~1.1.0",
+    "level": "~0.17.0-1",
+    "q": "~0.9.7"
+  },
+  "devDependencies": {
+    "mocha": "~1.13.0",
+    "chai": "~1.8.1"
+  }
+}
