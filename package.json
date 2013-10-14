@@ -1,6 +1,6 @@
 {
   "name": "levelsync",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Backbone.Sync replacement for leveldb",
   "main": "index.js",
   "scripts": {
