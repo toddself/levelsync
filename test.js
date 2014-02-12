@@ -11,7 +11,8 @@
 var dbPath = './test_db';
 var levelup = require('level');
 var db = levelup(dbPath, {valueEncoding: 'json'});
-var Model = require('./index')(db);
+var Backbone = require('backbone');
+Backbone.sync = require('./')(db);
 var expect = require('chai').expect();
 var q = require('q');
 var fixture = require('./fixture');
@@ -22,7 +23,7 @@ describe('levelsync', function(){
   var existing_model;
 
   beforeEach(function(done){
-    existing_model = new Model();
+    existing_model = new Backbone.Model();
     existing_model.set(fixture);
     existing_model.save(existing_model.toJSON(), {cb: _cb});
 
@@ -39,7 +40,7 @@ describe('levelsync', function(){
   });
 
   it('Should save the document to the datastore', function(done){
-    var test_model = new Model();
+    var test_model = new Backbone.Model();
     test_model.set(fixture);
 
     q(test_model.save()).then(function(data){
@@ -78,7 +79,7 @@ describe('levelsync', function(){
   });
 
   it('Should get an existing object', function(done){
-    var m = new Model();
+    var m = new Backbone.Model();
     m.set('id', existingid);
     m.fetch({cb: f});
     function f(err, data){
