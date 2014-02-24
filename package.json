@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/ahdinosaur/levelsync"
+    "url": "http://github.com/toddself/levelsync"
   },
   "keywords": [
     "levelup",
@@ -22,7 +22,7 @@
   "author": "Todd Kenedy",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ahdinosaur/levelsync/issues"
+    "url": "https://github.com/toddself/levelsync/issues"
   },
   "dependencies": {
     "backbone": "~1.1.0",
