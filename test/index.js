@@ -8,14 +8,14 @@
  */
 'use strict';
 
-var dbPath = './test_db';
+var dbPath = __dirname + '/../test_db';
 var levelup = require('level');
 var db = levelup(dbPath, {valueEncoding: 'json'});
 var Backbone = require('backbone');
-Backbone.sync = require('./')(db);
+Backbone.sync = require('../')(db);
 var expect = require('chai').expect();
 var q = require('q');
-var fixture = require('./fixture');
+var fixture = require('../fixture');
 
 
 describe('levelsync', function(){
@@ -39,7 +39,7 @@ describe('levelsync', function(){
 
   });
 
-  it('Should save the document to the datastore', function(done){
+  it('Should save the object to the database', function(done){
     var test_model = new Backbone.Model();
     test_model.set(fixture);
 
@@ -78,22 +78,37 @@ describe('levelsync', function(){
     });
   });
 
-  it('Should get an existing object', function(done){
+  it('Should get an existing object in the database', function(done){
     var m = new Backbone.Model();
     m.set('id', existingid);
     m.fetch({cb: f});
-    function f(err, data){
-      if(data.id === existingid){
+    function f(err, obj){
+      if(obj.id === existingid){
         done();
       } else {
-        var err = new Error('Expected '+data.id+' to be '+existingid);
+        var err = new Error('Expected '+obj.id+' to be '+existingid);
         done(err);
       }
     };
 
   });
 
-   afterEach(function(done){
+  it('Should get all existing objects in the database', function(done){
+    var c = new Backbone.Collection();
+    c.fetch({cb: f});
+    function f(err, objs) {
+      var obj = objs[0];
+      if(obj.id === existingid){
+        done();
+      } else {
+        var err = new Error('Expected '+obj.id+' to be '+existingid);
+        done(err);
+      }
+    };
+
+  });
+
+  afterEach(function(done){
     db.createKeyStream()
       .on('data', function(k){
         db.del(k);
@@ -101,5 +116,5 @@ describe('levelsync', function(){
       .on('close', function(){
         done();
       });
-   });
+  });
 });
