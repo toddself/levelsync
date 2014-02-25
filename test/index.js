@@ -13,7 +13,7 @@ var levelup = require('level');
 var db = levelup(dbPath, {valueEncoding: 'json'});
 var Backbone = require('backbone');
 Backbone.sync = require('../')(db);
-var expect = require('chai').expect();
+var expect = require('chai').expect;
 var q = require('q');
 var fixture = require('../fixture');
 
@@ -25,57 +25,49 @@ describe('levelsync', function(){
   beforeEach(function(done){
     existing_model = new Backbone.Model();
     existing_model.set(fixture);
-    existing_model.save(existing_model.toJSON(), {cb: _cb});
-
-    function _cb(err, data){
-      if(err){
-        throw err;
-      } else {
-        existing_model.set(data);
-        existingid = data.id;
-        done();
-      }
-    }
-
+    existing_model.save(existing_model.toJSON())
+    .then(function(data){
+      existing_model.set(data);
+      existingid = data.id;
+      done();
+    })
+    .catch(done);
   });
 
   it('Should save the object to the database', function(done){
     var test_model = new Backbone.Model();
     test_model.set(fixture);
 
-    q(test_model.save()).then(function(data){
-      if(data.id){
+    test_model.save()
+    .then(function(data){
+      if (data.id){
         done();
       } else {
         done(new Error('Not saved'));
       }
-    }, function(err){
-      done(err);
-    });
+    })
+    .catch(done);
   });
 
-  it('Should perform an in-place update when changing data', function(done){
+  it('Should perform an in-place update when changing object', function(done){
     var new_title = 'this is a test';
     existing_model.set('title', new_title);
 
-    q(existing_model.save()).then(function(data){
-      if(data.id === existingid && data.title === new_title){
-        done();
-      } else {
-        var err = new Error('Expected '+data.id+' to be '+existingid+' and '+data.title+' to be '+new_title);
-        done(err);
-      }
-    }, function(err){
-      done(err);
-    });
+    existing_model.save()
+    .then(function(obj){
+      expect(obj).to.have.property('id', existingid);
+      expect(obj).to.have.property('title', new_title);
+      done();
+    })
+    .catch(done);
   });
 
   it('Should delete an object in the database', function(done){
-    q(existing_model.destroy()).then(function(data){
+    existing_model.destroy()
+    .then(function(obj){
       done();
-    }, function(err){
-      done(err);
-    });
+    })
+    .catch(done);
   });
 
   it('Should get an existing object in the database', function(done){
@@ -83,27 +75,19 @@ describe('levelsync', function(){
     m.set('id', existingid);
     m.fetch({cb: f});
     function f(err, obj){
-      if(obj.id === existingid){
-        done();
-      } else {
-        var err = new Error('Expected '+obj.id+' to be '+existingid);
-        done(err);
-      }
+      expect(obj).to.have.property('id', existingid);
+      done();
     };
-
   });
 
   it('Should get all existing objects in the database', function(done){
     var c = new Backbone.Collection();
     c.fetch({cb: f});
-    function f(err, objs) {
+    function f(err, objs){
+      expect(objs).to.have.length(1);
       var obj = objs[0];
-      if(obj.id === existingid){
-        done();
-      } else {
-        var err = new Error('Expected '+obj.id+' to be '+existingid);
-        done(err);
-      }
+      expect(obj).to.have.property('id', existingid);
+      done();
     };
 
   });
