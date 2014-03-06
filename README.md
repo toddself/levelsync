@@ -10,9 +10,12 @@ npm install --save levelsync
 
 ## Usage
 ```
-var Model = require('levelsync')('./path/to/db');
+var levelup = require('level');
+var db = levelup('./path/to/db');
+var Backbone = require('backbone');
+Backbone.sync = require('levelsync')(db);
 
-var StatBlock = Model.extend({
+var StatBlock = Backbone.Model.extend({
   defaults: {
     'str': 8,
     'con': 8,
